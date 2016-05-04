@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>remote iframe</title>
+</head>
+<body>
+	<iframe id="iframe1" src="http://localhost:7180/grunt/views/remote-iframe.html" frameborder="0"></iframe>
+	<script>
+		(function(){
+			var iframe1 = document.querySelector('#iframe1');
+			iframe1.onload = function(){
+				iframe1.contentWindow.postMessage('this is 2.html' ,'*');
+			};
+			
+			window.onmessage = function(e){
+				console.log('2.html', e, e.data);
+			};
+			
+		})();
+	</script>
+</body>
+</html>

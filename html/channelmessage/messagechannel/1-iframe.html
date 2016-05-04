@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>1-iframe</title>
+</head>
+
+<body>
+	<input type="text" id="message" required>
+	<button type="button" id="channel">chnnel click</button>
+	
+	<div id="content">
+		
+	</div>
+	<script>
+		(function(){
+			var btn = document.querySelector('#channel'),
+				message = document.querySelector('#message'),
+				content = document.querySelector('#content');
+				
+			function createElement(message, origin){
+				var p = document.createElement('p');
+				p.innerText = origin+':'+message;
+				return p;
+			}
+				
+			window.onmessage = function(e){
+				console.log('1-iframe', e, e.ports);
+				var channel = e.ports[0];
+				if(channel){
+					channel.onmessage = function(e){
+						console.log('channel port2 message', e, e.data)
+						content.appendChild(createElement(e.data, 'main'));
+					};
+					
+					btn.addEventListener('click', function(){
+						channel.postMessage(message.value);
+					});
+				}
+			};
+			
+		})();
+	</script>
+
+</body>
+
+</html>

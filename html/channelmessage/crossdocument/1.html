@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>cross document</title>
+</head>
+<body>
+	Cross document
+	<iframe id="ifr1" src="1-iframe.html" frameborder="0"></iframe>
+	<script>
+		(function(){
+			var ifr1 = document.querySelector('#ifr1');
+			ifr1.onload = function(){
+				ifr1.contentWindow.postMessage('ab', '*');
+			};
+			window.onmessage= function(e){
+				console.log('1.html');
+				console.log(e);
+			};
+		})();
+	</script>
+</body>
+</html>

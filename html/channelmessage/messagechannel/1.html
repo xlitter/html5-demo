@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>message channel</title>
+	<style>
+		#iframe1, .main{
+			float:left;
+			width: 50%;
+			height: 300px;
+			border:1px solid #ddd;			
+		}
+		#iframe1{
+			margin-right: -4px;
+		}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<form>
+			<input type="text" id="message" required/> 
+			<button type="button" id="btnSend">main message</button>
+			<input type="text" id="message2" required/>
+			<button type="button" id="btnSend2">iframe2 send</button>
+		</form>
+		
+		<div id="content">
+			
+		</div>
+	</div>
+	<iframe id="iframe1" src="1-iframe.html" frameborder="0"></iframe>
+	<iframe src="2-iframe.html" frameborder="0" id="iframe2"></iframe>
+	<script>
+		(function(){
+			var btnSend = document.querySelector('#btnSend'),
+			    btnSend2 = document.querySelector('#btnSend2'),
+					message =document.querySelector('#message'),
+					message2 =document.querySelector('#message2'),
+					channel = new MessageChannel(),
+					channel2 = new MessageChannel(),
+					iframe1 =document.querySelector('#iframe1'),
+					iframe2 = document.querySelector('#iframe2'),
+					content = document.querySelector('#content');
+					
+			function createElement(message, origin){
+				var p = document.createElement('p');
+				p.innerText = origin+':'+message;
+				return p;
+			}
+			
+			iframe1.addEventListener('load', function(){
+				iframe1.contentWindow.postMessage('this is 1.html', '*', [channel.port2]);
+			}, false);
+			
+			iframe2.addEventListener('load', function(){
+				iframe2.contentWindow.postMessage('this is 1.html', '*', [channel2.port2]);
+			}, false);
+			
+			channel.port1.onmessage = function(e){
+				console.log('channel port1', e, e.data);		
+			  content.appendChild(createElement(e.data, 'iframe1'));
+			};
+			
+			channel2.port1.start();
+			
+			channel2.port1.addEventListener('message', function(e){
+				content.appendChild(createElement(e.data, 'iframe2'));	
+			});
+			
+			btnSend.addEventListener('click', function(){
+				channel.port1.postMessage(message.value);
+			});
+			
+			btnSend2.addEventListener('click', function(){
+				channel2.port1.postMessage(message2.value);
+			});
+			
+			
+		})();
+	</script>
+</body>
+</html>

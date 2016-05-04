@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>1-iframe.html</title>
+</head>
+<body>
+	
+	<script>
+		(function(){
+			window.onmessage = function(e){
+				console.log('this is 1-iframe');
+				console.log(e);
+				// e.source.postMessage('abc','http://localhost:3000');
+				window.parent.postMessage('abc', '*');
+			};
+		})();
+	</script>
+</body>
+</html>
